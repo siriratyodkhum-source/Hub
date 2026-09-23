@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLUX.1 Complete Studio & ImageToPrompt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --panel: #FFFFFF;
+            --primary: #0A0A0A;
+            --accent-orange: #FF4F00;
+            --accent-orange-hover: #E04400;
+            --text-dark: #0F172A;
+            --text-dim: #475569;
+            --border: #E2E8F0;
+        }
+
+        /* ปรับขนาดฟอนต์พื้นฐานของ Body เป็น 22px */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Sarabun', sans-serif; }
+        body { background: var(--bg); color: var(--text-dark); padding: 20px; min-height: 100vh; font-size: 22px; line-height: 1.5; }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        /* Nav / Header Bar */
+        .top-nav { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 20px; }
+        
+        /* ปุ่มกลับหน้าหลัก สีกรอบแบบผู้สร้าง (--accent-orange) */
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFFFFF;
+            color: #0F172A;
+            border: 2px solid var(--accent-orange); /* สีส้มโทนเดียวกับผู้สร้าง */
+            padding: 6px 22px;
+            border-radius: 50px; /* ขอบมนแคปซูล */
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 22px;
+            transition: all 0.2s ease;
+        }
+        .btn-home:hover {
+            background: #FFF7F2;
+            border-color: var(--accent-orange-hover);
+            transform: translateY(-1px);
+        }
+
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; color: var(--primary); margin-bottom: 8px; }
+        header p { color: var(--text-dim); font-size: 22px; }
+
+        /* Navigation Tabs */
+        .tab-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; }
+        .tab-btn { background: #FFFFFF; border: 2px solid var(--border); color: var(--text-dim); padding: 12px 24px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 22px; }
+        .tab-btn.active { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Creator Info Badge */
+        .creator-badge {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .creator-info { font-size: 22px; color: var(--text-dim); }
+        .creator-info strong { color: var(--text-dark); }
+
+        /* Model Selector Grid */
+        .model-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; }
+        @media (max-width: 768px) { .model-selector { grid-template-columns: 1fr; } }
+
+        .model-card { background: var(--panel); border: 2px solid var(--border); border-radius: 14px; padding: 18px; cursor: pointer; transition: 0.2s; }
+        .model-card.active-schnell,
+        .model-card.active-dev,
+        .model-card.active-pro { border-color: var(--accent-orange); background: #FFF7F2; }
+        
+        .model-title { font-family: 'Space Grotesk'; font-size: 22px; font-weight: bold; display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--text-dark); }
+        .model-card p { font-size: 22px; color: var(--text-dim); }
+        .tag-schnell, .tag-dev, .tag-pro { color: var(--accent-orange); font-weight: bold; }
+
+        /* Studio & ImageToPrompt Grid Layout */
+        .studio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 25px; }
+        @media (max-width: 768px) { .studio-grid { grid-template-columns: 1fr; } }
+
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .panel-title { font-size: 22px; font-weight: bold; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; color: var(--text-dark); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+
+        .input-group { margin-bottom: 18px; }
+        label { display: block; font-size: 22px; color: var(--text-dark); font-weight: 600; margin-bottom: 8px; }
+        input, select, textarea { width: 100%; background: #F1F5F9; border: 1px solid var(--border); color: var(--text-dark); padding: 12px 14px; border-radius: 10px; font-size: 22px; outline: none; transition: 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-orange); background: #FFFFFF; }
+
+        .upload-area { border: 2px dashed var(--accent-orange); border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; transition: 0.2s; background: #FFF7F2; font-size: 22px; color: var(--text-dark); font-weight: bold; }
+        .upload-area:hover { background: #FFEEDD; }
+        .preview-img { max-width: 100%; max-height: 220px; border-radius: 8px; margin-top: 15px; display: none; }
+
+        .output-box { background: #0A0A0A; border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-family: monospace; font-size: 22px; color: #FF4F00; min-height: 220px; max-height: 350px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.4; }
+
+        .btn-action { width: 100%; background: var(--accent-orange); color: #FFFFFF; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 12px; transition: 0.2s; font-size: 22px; }
+        .btn-action:hover { background: var(--accent-orange-hover); transform: translateY(-1px); }
+
+        /* Video Box Style */
+        .video-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1.5px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 16px 24px;
+            background-color: #ffffff;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .video-text {
+            font-size: 22px;
+            color: var(--text-dark);
+        }
+
+        .yt-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ff0000;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            white-space: nowrap;
+            transition: background-color 0.2s ease;
+        }
+
+        .yt-btn:hover {
+            background-color: #cc0000;
+        }
+
+        /* Open Web Links Bar */
+        .links-bar { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .links-title { font-size: 22px; font-weight: bold; margin-bottom: 14px; color: var(--text-dark); }
+        .links-group { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .web-link-btn { background: #0A0A0A; border: 1px solid #0A0A0A; color: #FFFFFF; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-size: 22px; font-weight: 600; transition: 0.2s; }
+        .web-link-btn:hover { background: var(--accent-orange); border-color: var(--accent-orange); color: #FFFFFF; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- แถบด้านบนพร้อมปุ่มกลับหน้าหลัก สีกรอบส้มแบบผู้สร้าง -->
+    <div class="top-nav">
+        <a href="index.html" class="btn-home">← กลับหน้าหลัก</a>
+    </div>
+
+    <header>
+        <h1>FLUX.1 STUDIO & IMAGE TO PROMPT</h1>
+        <p>สร้าง Prompt แบบมาตรฐาน และถอดโครงสร้างภาพเป็น JSON Prompt สำหรับ FLUX.1</p>
+    </header>
+
+    <div class="creator-badge">
+        <div class="creator-info">
+            👨‍💻 <strong>ผู้สร้างและพัฒนาโมเดล:</strong> Black Forest Labs
+        </div>
+        <div class="creator-info">
+            🌐 <strong>เว็บไซต์หลัก:</strong> <a href="https://blackforestlabs.ai" target="_blank" style="color: var(--accent-orange); text-decoration: none; font-weight: bold;">blackforestlabs.ai</a>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+        <p>🎯 <b>วัตถุประสงค์:</b> เพิ่มความแม่นยำในการทำตามคำสั่ง</p>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(event, 'img2prompt')">📷 Image to JSON Prompt</button>
+        <button class="tab-btn" onclick="switchTab(event, 'studio')">🎨 Manual Prompt Studio</button>
+    </div>
+
+    <!-- TAB 1: Image To JSON Prompt -->
+    <div id="tab-img2prompt" class="tab-content active">
+        <div class="studio-grid">
+            <div class="panel">
+                <div class="panel-title">01 📤 UPLOAD IMAGE</div>
+                
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    📁 คลิกเพื่ออัปโหลดรูปภาพที่ต้องการถอด Prompt
+                    <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                    <br>
+                    <img id="img-preview" class="preview-img">
+                </div>
+
+                <div class="input-group" style="margin-top: 18px;">
+                    <label>PROMPT TYPE</label>
+                    <select id="json-style">
+                        <option value="json">JSON Prompt (โครงสร้างรายละเอียด)</option>
+                        <option value="text">Standard Text Prompt</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>PROMPT LANGUAGE</label>
+                    <select id="json-lang">
+                        <option value="en">English (แนะนำสำหรับ FLUX.1)</option>
+                        <option value="th">ไทย (Thai)</option>
+                    </select>
+                </div>
+
+                <button class="btn-action" onclick="generateJsonPrompt()">✨ Generate Prompt จากรูป</button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">02 📄 OUTPUT RESULT (JSON)</div>
+                <label>โครงสร้าง Prompt ที่ได้ (คัดลอกนำไปสร้างภาพต่อได้เลย):</label>
+                <div class="output-box" id="json-output">// อัปโหลดภาพแล้วกด Generate Prompt เพื่อดูโครงสร้าง JSON</div>
+                <button class="btn-action" onclick="copyText('json-output')">📋 Copy JSON Prompt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Manual Studio -->
+    <div id="tab-studio" class="tab-content">
+        <div class="model-selector">
+            <div class="model-card active-schnell" id="card-schnell" onclick="selectModel('schnell')">
+                <div class="model-title"><span class="tag-schnell">FLUX.1 [schnell]</span> <span>⚡ แบบธรรมดา</span></div>
+                <p>รุ่นเร็วที่สุด ใช้ Step น้อย เหมาะแก่การทดสอบด่วน</p>
+            </div>
+            <div class="model-card" id="card-dev" onclick="selectModel('dev')">
+                <div class="model-title"><span class="tag-dev">FLUX.1 [dev]</span> <span>🛠️ สายปรับแต่ง</span></div>
+                <p>รุ่นโอเพ่นซอร์ส เปิดให้โหลดไปเทรน LoRA หรือรันบน PC</p>
+            </div>
+            <div class="model-card" id="card-pro" onclick="selectModel('pro')">
+                <div class="model-title"><span class="tag-pro">FLUX.1 [pro]</span> <span>👑 พรีเมียมท็อป</span></div>
+                <p>รุ่นประมวลผลสูงสุด ภาพคมชัด แสงเงาสมจริงระดับสตูฯ</p>
+            </div>
+        </div>
+
+        <div class="studio-grid">
+            <div class="panel">
+                <div class="panel-title">🎨 ปรับแต่ง Prompt & Parameters</div>
+                <div class="input-group">
+                    <label>รายละเอียดภาพ (Subject)</label>
+                    <textarea id="inp_subject" rows="3" placeholder="A futuristic cyberpunk character..." oninput="updatePrompt()"></textarea>
+                </div>
+                <div class="input-group">
+                    <label>ข้อความบนภาพ (Text Rendering)</label>
+                    <input type="text" id="inp_text" placeholder="เช่น 'FLUX 2026'" oninput="updatePrompt()">
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">📄 Ready-to-Use Output</div>
+                <div class="output-box" id="studio_output"></div>
+                <button class="btn-action" onclick="copyText('studio_output')">📋 คัดลอก Prompt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- กล่องแนะนำวิดีโอ YouTube ท้ายสุด -->
+    <div class="creator-badge">
+        <div class="video-text">
+            🎬 <strong>วิดีโอแนะนำการใช้งาน FLUX.1:</strong> รับชมคลิปสอนใช้งานอย่างรายละเอียดบน YouTube
+        </div>
+        <a href="https://youtu.be/dwKSjfnFPME?si=ofnwosOdLvDly6b5" target="_blank" class="yt-btn">
+            ▶ ดูคลิปบน YouTube
+        </a>
+    </div>
+
+    <!-- Links Bar -->
+    <div class="links-bar">
+        <div class="links-title">🚀 คลิกเปิดเว็บใช้งาน FLUX.1 ออนไลน์ได้ทันที:</div>
+        <div class="links-group">
+            <a href="https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell" target="_blank" class="web-link-btn">🤗 Hugging Face (schnell)</a>
+            <a href="https://fal.ai/models/fal-ai/flux/dev" target="_blank" class="web-link-btn">⚡ Fal.ai (FLUX dev/pro)</a>
+            <a href="https://replicate.com/collections/flux" target="_blank" class="web-link-btn">🌀 Replicate</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(evt, tabName) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById('tab-' + tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = document.getElementById('img-preview');
+                img.src = evt.target.result;
+                img.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function generateJsonPrompt() {
+        const lang = document.getElementById('json-lang').value;
+        const style = document.getElementById('json-style').value;
+        const output = document.getElementById('json-output');
+
+        if (style === 'text') {
+            output.innerText = lang === 'en' 
+                ? "Cinematic portrait of a male character, muscular build, short hair, wearing a sleek suit, dark background with subtle lighting, high detail, 8k resolution."
+                : "ภาพเหมือนเชิงภาพยนตร์ของตัวละครชาย รูปร่างสูงใหญ่ สวมชุดสูท พื้นหลังมืดพร้อมแสงไฟส่องเน้น ความละเอียดสูง 8k";
+            return;
+        }
+
+        if (lang === 'en') {
+            output.innerText = JSON.stringify({
+                "image_content": {
+                    "main_description": "Cinematic portrait with realistic fantasy blend",
+                    "subjects": [{
+                        "identity": "Male character, muscular build, wearing sleek formal suit",
+                        "spatial_position": { "placement": "Center of frame", "scale": "Upper body portrait" },
+                        "pose": { "body_narrative": "Standing still, calm expression", "eye_gaze": { "direction": "Looking at camera", "contact": "Direct eye contact" } }
+                    }],
+                    "style_and_environment": { "lighting": "Dramatic side lighting", "atmosphere": "Cinematic, moody" }
+                }
+            }, null, 2);
+        } else {
+            output.innerText = JSON.stringify({
+                "image_content": {
+                    "main_description": "ภาพเหมือนเชิงภาพยนตร์แบบสมจริงแนวแฟนตาซี",
+                    "subjects": [{
+                        "identity": "ตัวละครชาย รูปร่างสูงใหญ่ สวมชุดสูทเรียบหรู",
+                        "spatial_position": { "placement": "ยืนเด่นกลางภาพด้านหน้า", "scale": "เห็นครึ่งตัวช่วงบน" },
+                        "pose": { "body_narrative": "ยืนตัวตรงอย่างนิ่ง สุขุม", "eye_gaze": { "direction": "มองตรงเข้าหากล้อง", "contact": "สบตาโดยตรง" } }
+                    }],
+                    "style_and_environment": { "lighting": "แสงดราม่าส่องจากด้านข้าง", "atmosphere": "อารมณ์ภาพยนตร์ มืดมนสมจริง" }
+                }
+            }, null, 2);
+        }
+    }
+
+    let currentModel = 'schnell';
+    function selectModel(model) {
+        currentModel = model;
+        document.getElementById('card-schnell').className = 'model-card' + (model === 'schnell' ? ' active-schnell' : '');
+        document.getElementById('card-dev').className = 'model-card' + (model === 'dev' ? ' active-dev' : '');
+        document.getElementById('card-pro').className = 'model-card' + (model === 'pro' ? ' active-pro' : '');
+        updatePrompt();
+    }
+
+    function updatePrompt() {
+        const subject = document.getElementById('inp_subject').value || "[รายละเอียดภาพ]";
+        const textInImg = document.getElementById('inp_text').value;
+        let fullPrompt = subject;
+        if (textInImg) fullPrompt += `, featuring text "${textInImg}"`;
+        document.getElementById('studio_output').innerText = `// FLUX.1 [${currentModel.toUpperCase()}]\nPrompt: "${fullPrompt}"`;
+    }
+
+    function copyText(id) {
+        const text = document.getElementById(id).innerText;
+        navigator.clipboard.writeText(text);
+        alert("คัดลอกเรียบร้อยแล้ว!");
+    }
+
+    updatePrompt();
+</script>
+
+</body>
+</html>

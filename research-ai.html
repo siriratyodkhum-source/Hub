@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หมวดหมู่: ค้นคว้า & งานเอกสาร - Gemini Prompt Studio</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        body { 
+            background-color: #F8FAFC; 
+            color: #1E293B; 
+            padding: 24px; 
+            min-height: 100vh; 
+            font-size: 22px; 
+            line-height: 1.6;
+        }
+        
+        .back-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-bottom: 24px; 
+            color: #1A73E8; 
+            text-decoration: none; 
+            font-weight: bold; 
+            font-size: 22px; 
+            transition: all 0.2s ease; 
+        }
+        .back-btn:hover { 
+            color: #9333EA; 
+            transform: translateX(-4px); 
+        }
+
+        header { 
+            text-align: center; 
+            margin-bottom: 32px; 
+        }
+        header h1 { 
+            font-size: 2.6rem; 
+            background: linear-gradient(135deg, #1A73E8 0%, #9333EA 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 10px; 
+            font-weight: 800; 
+        }
+        header p { 
+            color: #475569; 
+            font-size: 22px; 
+        }
+
+        .credits {
+            text-align: center;
+            font-size: 22px;
+            color: #1E293B;
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+        .credits p {
+            margin: 4px 0;
+        }
+
+        .category-container { 
+            display: flex; 
+            justify-content: center; 
+            margin-bottom: 28px; 
+        }
+        .category-badge { 
+            background: rgba(26, 115, 232, 0.08); 
+            color: #1A73E8; 
+            border: 1px solid rgba(26, 115, 232, 0.25); 
+            padding: 8px 24px; 
+            border-radius: 50px; 
+            font-size: 22px; 
+            font-weight: bold; 
+        }
+
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+        }
+        .ai-card { 
+            background: #FFFFFF; 
+            border-radius: 20px; 
+            padding: 2.5rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); 
+            border: 1px solid #E2E8F0; 
+        }
+        .card-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 1.5rem; 
+            border-bottom: 1px solid #E2E8F0; 
+            padding-bottom: 1rem; 
+        }
+        .card-header h2 { 
+            font-size: 22px; 
+            color: #1E293B; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: bold;
+        }
+        .badge { 
+            background: #F1F5F9; 
+            color: #1A73E8; 
+            padding: 0.4rem 0.9rem; 
+            border-radius: 20px; 
+            font-size: 22px; 
+            font-weight: bold; 
+            border: 1px solid #CBD5E1;
+        }
+
+        /* --- Interactive Builder Section --- */
+        .builder-box { 
+            background: linear-gradient(145deg, #FFFFFF 0%, #F1F5F9 100%); 
+            border: 1.5px solid #1A73E8; 
+            border-radius: 16px; 
+            padding: 1.8rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.08); 
+        }
+        .builder-title { 
+            font-size: 22px; 
+            color: #1A73E8; 
+            font-weight: bold; 
+            margin-bottom: 1.2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .builder-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 14px; 
+            margin-bottom: 15px; 
+        }
+        @media (max-width: 600px) { 
+            .builder-grid { 
+                grid-template-columns: 1fr; 
+            } 
+        }
+        
+        .builder-grid select, .builder-grid input, input[type="text"] { 
+            background: #FFFFFF; 
+            border: 1px solid #CBD5E1; 
+            color: #1E293B; 
+            padding: 12px 16px; 
+            border-radius: 8px; 
+            font-size: 22px; 
+            width: 100%; 
+            outline: none; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .builder-grid select:focus, input[type="text"]:focus { 
+            border-color: #1A73E8; 
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+        }
+
+        /* Filter Tabs */
+        .filter-tags { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 1.5rem; 
+            flex-wrap: wrap; 
+        }
+        .filter-btn { 
+            background: #E2E8F0; 
+            color: #475569; 
+            border: none; 
+            padding: 8px 18px; 
+            border-radius: 20px; 
+            font-size: 22px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+        }
+        .filter-btn.active, .filter-btn:hover { 
+            background: #1A73E8; 
+            color: white; 
+        }
+
+        /* Prompt Box Styling */
+        .prompt-box { 
+            background: #F8FAFC; 
+            border: 1px solid #E2E8F0; 
+            border-radius: 12px; 
+            padding: 1.2rem; 
+            margin: 1.2rem 0; 
+            transition: border-color 0.2s; 
+        }
+        .prompt-box:hover { 
+            border-color: #1A73E8; 
+        }
+        .prompt-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 0.8rem; 
+            font-weight: bold; 
+            color: #1A73E8; 
+            font-size: 22px; 
+        }
+        
+        .copy-btn { 
+            background: #1A73E8; 
+            color: white; 
+            border: none; 
+            padding: 0.5rem 1.1rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 22px; 
+            font-weight: bold; 
+            transition: all 0.2s; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
+        .copy-btn:hover { 
+            background: #9333EA; 
+            transform: translateY(-1px); 
+        }
+        .copy-btn.copied { 
+            background: #10B981 !important; 
+        }
+        
+        textarea { 
+            width: 100%; 
+            height: 140px; 
+            padding: 0.8rem; 
+            border-radius: 8px; 
+            border: 1px solid #CBD5E1; 
+            resize: none; 
+            background: #FFFFFF; 
+            color: #1E293B; 
+            font-size: 22px; 
+            line-height: 1.5; 
+            font-family: monospace; 
+            outline: none; 
+        }
+        textarea:focus { 
+            border-color: #1A73E8; 
+        }
+
+        /* Media / External Links */
+        .yt-card { 
+            background: rgba(239, 68, 68, 0.05); 
+            border: 1px solid rgba(239, 68, 68, 0.2); 
+            border-radius: 12px; 
+            padding: 1.2rem; 
+            margin: 1.5rem 0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        .yt-card p {
+            font-size: 22px;
+        }
+        
+        .btn-link { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: linear-gradient(135deg, #1A73E8 0%, #9333EA 100%); 
+            color: white; 
+            text-decoration: none; 
+            padding: 0.85rem 1.8rem; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            font-size: 22px; 
+            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.25); 
+            transition: all 0.2s ease; 
+        }
+        .btn-link:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(147, 51, 234, 0.35); 
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← กลับหน้าหลัก</a>
+
+    <header>
+        <h1>Gemini Prompt Studio</h1>
+        <p>ยกระดับการค้นคว้า สรุปงานวิจัย และทำเอกสารด้วยคำสั่งปัญญาประดิษฐ์ระดับโปร</p>
+        
+        <div class="credits">
+            👨‍💻 <strong>ผู้สร้างและพัฒนา:</strong> Grant Lee</p>
+            <p><strong>ทีมและบุคคลสำคัญ:</strong> Jon Berger, James Dunthorne</p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 15px; margin-bottom: 20px;">
+            <p style="font-size: 22px; color: #1E293B;">🎯 <b>วัตถุประสงค์:</b> การเป็นเครื่องมือและพื้นที่รวบรวม/จัดสรรชุดคำสั่ง (Prompts) สำหรับใช้กับ Gemini AI</p>
+        </div>
+    </header>
+
+    <div class="category-container">
+        <div class="category-badge">📁 หมวดหมู่: ค้นคว้า & งานเอกสาร</div>
+    </div>
+
+    <div class="container">
+        <div class="ai-card">
+            <div class="card-header">
+                <h2>✨ Gemini Pro Prompts</h2>
+                <span class="badge">Google AI</span>
+            </div>
+
+            <!-- 🛠️ เครื่องมือใหม่: Generator ผสม Prompt อัตโนมัติ -->
+            <div class="builder-box">
+                <div class="builder-title">⚡ Interactive Prompt Generator (สร้าง Prompt ใช้เองทันที)</div>
+                <div class="builder-grid">
+                    <select id="b_role" onchange="generateCustomPrompt()">
+                        <option value="คุณคือผู้เชี่ยวชาญด้านงานวิจัยและวิเคราะห์ข้อมูล">บทบาท: นักวิจัยข้อมูล</option>
+                        <option value="คุณคือที่ปรึกษาด้านการจัดการเอกสารออฟฟิศมืออาชีพ">บทบาท: ผู้ช่วยงานเอกสาร</option>
+                        <option value="คุณคือผู้เชี่ยวชาญด้านการสรุปเนื้อหาและแปลภาษา">บทบาท: ผู้สรุปความ & แปลภาษา</option>
+                    </select>
+                    <select id="b_format" onchange="generateCustomPrompt()">
+                        <option value="สรุปเป็น ตารางเปรียบเทียบ พร้อมระบุข้อดี-ข้อเสีย">รูปแบบ: ตารางเปรียบเทียบ</option>
+                        <option value="สรุปเป็น Bullet Points ไม่เกิน 5 ข้อ กระชับ เข้าใจง่าย">รูปแบบ: Bullet Points</option>
+                        <option value="สรุปเป็นรายงานสั้น แบ่งหัวข้อย่อย Executive Summary">รูปแบบ: รายงานสั้น</option>
+                    </select>
+                </div>
+                <input type="text" id="b_topic" placeholder="พิมพ์หัวข้อที่ต้องการค้นหา (เช่น: เทรนด์เทคโนโลยี AI 2026)" oninput="generateCustomPrompt()" style="margin-bottom:12px;">
+                
+                <div class="prompt-box" style="margin: 0; background: #FFFFFF;">
+                    <div class="prompt-header">
+                        <span>ผลลัพธ์ Prompt ที่ได้:</span>
+                        <button class="copy-btn" onclick="copyText('custom_prompt_out', this)">📋 คัดลอก Prompt นี้</button>
+                    </div>
+                    <textarea id="custom_prompt_out" style="height: 120px;" readonly></textarea>
+                </div>
+            </div>
+
+            <!-- แถบกรองหมวดหมู่ -->
+            <div class="filter-tags">
+                <button class="filter-btn active" onclick="filterCategory('all', this)">ทั้งหมด</button>
+                <button class="filter-btn" onclick="filterCategory('research', this)">งานวิจัย/ค้นหา</button>
+                <button class="filter-btn" onclick="filterCategory('doc', this)">เอกสาร/ตาราง</button>
+            </div>
+
+            <!-- Prompt 1: Persona Framework -->
+            <div class="prompt-box" data-cat="research">
+                <div class="prompt-header">
+                    <span>1. ค้นหาเทรนด์พร้อมอ้างอิง URL (Persona Framework)</span>
+                    <button class="copy-btn" onclick="copyText('prompt1', this)">📋 คัดลอก</button>
+                </div>
+                <textarea id="prompt1" readonly>[Role] คุณคือผู้ช่วยนักวิจัยมืออาชีพที่มีประสบการณ์มากกว่า 10 ปี
+[Task] ช่วยค้นหาข้อมูลอัปเดตล่าสุดและสรุปเทรนด์เกี่ยวกับ [ใส่หัวข้อที่ต้องการ]
+[Format] สรุปเป็น Bullet Points 5 ข้อที่เข้าใจง่าย พร้อมแนบชื่อเว็บไซต์และ URL แหล่งอ้างอิงที่ดึงข้อมูลมาด้วยทุกครั้ง</textarea>
+            </div>
+
+            <!-- Prompt 2: Chain of Thought -->
+            <div class="prompt-box" data-cat="research">
+                <div class="prompt-header">
+                    <span>2. วิเคราะห์เชิงลึกทีละขั้นตอน (Chain of Thought)</span>
+                    <button class="copy-btn" onclick="copyText('prompt2', this)">📋 คัดลอก</button>
+                </div>
+                <textarea id="prompt2" readonly>[Task] จงวิเคราะห์ข้อดี ข้อเสีย และความคุ้มค่าของ [ระบุสิ่งที่ต้องการวิเคราะห์]
+[Condition] โปรดคิดและแสดงกระบวนการวิเคราะห์ทีละขั้นตอน (Step-by-step) เริ่มต้นจาก 1) ประเมินต้นทุน 2) วิเคราะห์ประโยชน์ 3) สรุปคำแนะนำ พร้อมแนบลิงก์อ้างอิง</textarea>
+            </div>
+
+            <!-- Prompt 3: Constraint & Format Control -->
+            <div class="prompt-box" data-cat="doc">
+                <div class="prompt-header">
+                    <span>3. สรุปเป็นตารางเปรียบเทียบเป๊ะๆ (Constraint Control)</span>
+                    <button class="copy-btn" onclick="copyText('prompt4', this)">📋 คัดลอก</button>
+                </div>
+                <textarea id="prompt4" readonly>[Task] สรุปเปรียบเทียบ [สิ่ง A] กับ [สิ่ง B] จากข้อมูลบนเว็บล่าสุด
+[Format] แสดงผลลัพธ์เป็น "ตารางเปรียบเทียบ" เท่านั้น โดยมีคอลัมน์: หัวข้อ | [สิ่ง A] | [สิ่ง B] | แหล่งข้อมูลอ้างอิง
+[Constraint] ห้ามใส่คำเกริ่นนำหรือคำลงท้าย แสดงเฉพาะตัวตารางเท่านั้น</textarea>
+            </div>
+
+            <!-- วิดีโอแนะนำ -->
+            <div class="yt-card">
+                <div>
+                    <strong style="color: #1E293B; font-size: 22px;">🎬 วิดีโอสอนใช้งาน Gemini แบบมือโปร:</strong>
+                    <p style="color: #64748B; font-size: 22px; margin-top: 2px;">เรียนรู้เทคนิคการค้นหาข้อมูลอย่างมีประสิทธิภาพ</p>
+                </div>
+                <a href="https://youtu.be/gvOkS_q-Qbk?si=pgE72QO6j1E8JYda" target="_blank" style="background: #EF4444; color: white; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 22px; white-space: nowrap;">
+                    ▶ ดูบน YouTube
+                </a>
+            </div>
+
+            <!-- ปุ่มเปิดใช้งานด้านล่าง -->
+            <div style="text-align: right; margin-top: 1.8rem;">
+                <a href="https://gemini.google.com" target="_blank" class="btn-link">
+                    เปิดใช้งาน Gemini AI 🚀
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ระบบสร้าง Prompt อัตโนมัติจาก Generator
+        function generateCustomPrompt() {
+            const role = document.getElementById('b_role').value;
+            const format = document.getElementById('b_format').value;
+            const topic = document.getElementById('b_topic').value || "[ระบุหัวข้อที่คุณต้องการ]";
+            
+            const result = `[Role] ${role}\n[Task] ช่วยค้นหาข้อมูลและวิเคราะห์ในหัวข้อ: "${topic}" จากข้อมูลอัปเดตบน Google\n[Format] ${format} พร้อมแนบลิงก์ URL อ้างอิง`;
+            
+            document.getElementById('custom_prompt_out').value = result;
+        }
+
+        // ระบบกรองหมวดหมู่ Prompt
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.querySelectorAll('.prompt-box[data-cat]').forEach(box => {
+                if (cat === 'all' || box.getAttribute('data-cat') === cat) {
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = 'none';
+                }
+            });
+        }
+
+        // ระบบคัดลอกข้อความพร้อมปุ่มเปลี่ยนสีแจ้งเตือน
+        async function copyText(id, btn) {
+            const textarea = document.getElementById(id);
+            try {
+                await navigator.clipboard.writeText(textarea.value);
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "✓ คัดลอกแล้ว!";
+                btn.classList.add("copied");
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove("copied");
+                }, 2000);
+            } catch (err) {
+                textarea.select();
+                document.execCommand("copy");
+                alert("คัดลอก Prompt เรียบร้อยแล้ว!");
+            }
+        }
+
+        // เรียกทำงานสร้าง Prompt ครั้งแรกเมื่อโหลดหน้า
+        generateCustomPrompt();
+    </script>
+</body>
+</html>

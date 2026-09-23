@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude AI - Pro Tech Prompt Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FDFBF8;
+            --panel: #ffffff;
+            --accent-primary: #D97706;
+            --accent-hover: #b45309;
+            --creator-border: #D6D3CD; /* สีขอบกรอบผู้สร้าง */
+            --accent-purple: #7C3AED;
+            --accent-emerald: #059669;
+            --text: #1E1B18;
+            --text-dim: #524b42;
+            --border: #e2d9cd;
+            --border-light: #f0eae1;
+            --code-bg: #f8f5f0;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Sarabun', sans-serif; 
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            padding: 24px 16px; 
+            min-height: 100vh; 
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+
+        /* Top Bar Container */
+        .top-navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* ปรับสไตล์ปุ่มกลับหน้าหลักให้ขอบเป็นสีเดียวกับกรอบผู้สร้าง */
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #FFFFFF;
+            color: #2D3748;
+            padding: 6px 28px;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border: 1px solid var(--creator-border); /* เปลี่ยนเป็นสีเดียวกับกรอบผู้สร้าง (#D6D3CD) */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-home:hover {
+            background: #F8F6F2;
+            border-color: #B8B5AE;
+            transform: translateY(-1px);
+        }
+
+        header { 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+
+        header h1 { 
+            font-family: 'Space Grotesk', sans-serif; 
+            font-size: 2.4rem; 
+            color: var(--text); 
+            letter-spacing: -0.5px; 
+        }
+
+        header p { 
+            color: var(--text-dim); 
+            font-size: 1.1rem; 
+            margin-top: 8px; 
+        }
+
+        /* Creator Info Badge */
+        .creator-badge {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .creator-info {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid var(--creator-border);
+            padding: 8px 24px;
+            border-radius: 9999px;
+        }
+
+        .creator-info strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Top Technical Specific Selectors */
+        .tech-selector { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 16px; 
+            margin-bottom: 24px; 
+        }
+
+        @media (max-width: 800px) { 
+            .tech-selector { 
+                grid-template-columns: 1fr; 
+            } 
+        }
+
+        .tech-card { 
+            background: var(--panel); 
+            border: 2px solid var(--border-light); 
+            border-radius: 12px; 
+            padding: 18px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            box-shadow: 0 1px 3px rgba(30, 27, 24, 0.03);
+        }
+
+        .tech-card:hover { 
+            transform: translateY(-2px); 
+            border-color: var(--accent-primary); 
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.1); 
+        }
+
+        .tech-card.active-fs { border-color: var(--accent-primary); background: #fffbeb; }
+        .tech-card.active-sec { border-color: var(--accent-purple); background: #f5f3ff; }
+        .tech-card.active-test { border-color: var(--accent-emerald); background: #ecfdf5; }
+
+        .card-title { 
+            font-family: 'Space Grotesk'; 
+            font-size: 1.25rem; 
+            font-weight: bold; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 6px; 
+        }
+
+        .tag-orange { color: var(--accent-primary); }
+        .tag-purple { color: var(--accent-purple); }
+        .tag-emerald { color: var(--accent-emerald); }
+
+        /* Main Workspace Grid */
+        .workspace { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 24px; 
+            margin-bottom: 24px; 
+        }
+
+        @media (max-width: 900px) { 
+            .workspace { 
+                grid-template-columns: 1fr; 
+            } 
+        }
+
+        .panel { 
+            background: var(--panel); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            padding: 24px; 
+            box-shadow: 0 2px 8px rgba(30, 27, 24, 0.04); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+        }
+
+        .panel-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 18px; 
+        }
+
+        .panel-title { 
+            font-size: 1.3rem; 
+            font-weight: 700; 
+            color: var(--text); 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 1.05rem; color: var(--text-dim); margin-bottom: 8px; font-weight: 600; }
+        
+        input, select, textarea { 
+            width: 100%; 
+            background: #ffffff; 
+            border: 1.5px solid var(--border); 
+            color: var(--text); 
+            padding: 12px 16px; 
+            border-radius: 10px; 
+            font-size: 18px; 
+            line-height: 1.5;
+            outline: none; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus { 
+            border-color: var(--accent-primary); 
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); 
+        }
+
+        .output-box { 
+            background: var(--code-bg); 
+            border: 1.5px solid var(--border); 
+            border-radius: 10px; 
+            padding: 18px; 
+            font-family: 'Sarabun', monospace; 
+            font-size: 22px; 
+            line-height: 1.6;
+            color: var(--text); 
+            min-height: 380px; 
+            max-height: 520px; 
+            overflow-y: auto; 
+            white-space: pre-wrap; 
+            word-break: break-all; 
+        }
+
+        .btn { 
+            width: 100%; background: var(--accent-primary); color: #ffffff; border: none; padding: 14px 20px; 
+            border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; 
+            box-shadow: 0 2px 4px rgba(217, 119, 6, 0.25); display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn-purple { background: var(--accent-purple); box-shadow: 0 2px 4px rgba(124, 58, 237, 0.25); }
+        .btn-purple:hover { background: #6d28d9; }
+
+        /* Video Section UI */
+        .video-banner {
+            display: flex; align-items: center; justify-content: space-between; padding: 18px 22px;
+            background-color: #ffffff; border: 1.5px solid var(--border); border-radius: 16px;
+            gap: 16px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(30, 27, 24, 0.04);
+        }
+        .video-info { display: flex; flex-direction: column; gap: 4px; }
+        .video-banner .panel-title { font-weight: bold; font-size: 1.15rem; color: var(--text); }
+        .video-banner .panel-desc { margin: 0; font-size: 0.95rem; color: var(--text-dim); }
+        .yt-btn {
+            display: inline-flex; align-items: center; justify-content: center; background-color: #ff0000;
+            color: #ffffff; font-weight: bold; padding: 10px 20px; border-radius: 8px; text-decoration: none;
+            white-space: nowrap; transition: background-color 0.2s ease;
+        }
+        .yt-btn:hover { background-color: #cc0000; }
+
+        .video-playlist { display: flex; gap: 10px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 6px; }
+        .video-thumb { 
+            background: var(--panel); border: 1px solid var(--border); color: var(--text); border-radius: 8px; 
+            padding: 10px 16px; font-size: 0.95rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s; 
+        }
+        .video-thumb:hover, .video-thumb.active { background: var(--accent-primary); color: #ffffff; border-color: var(--accent-primary); }
+
+        /* External Skill Websites Section */
+        .skills-hub { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(30, 27, 24, 0.04); }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+        .web-card { 
+            background: #ffffff; border: 1.5px solid var(--border-light); border-radius: 12px; padding: 18px; 
+            text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between; 
+            transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(30, 27, 24, 0.02);
+        }
+        .web-card:hover { border-color: var(--accent-primary); transform: translateY(-3px); box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); background: #fffdfa; }
+        .web-title { font-weight: 700; font-size: 1.15rem; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+        .web-desc { font-size: 0.95rem; color: var(--text-dim); line-height: 1.4; }
+        .web-action { margin-top: 14px; font-size: 0.9rem; font-weight: 700; color: var(--accent-primary); display: flex; align-items: center; gap: 4px; }
+
+        /* Links Footer */
+        .links-bar { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; text-align: center; }
+        .links-group { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+        .web-link-btn { background: #ffffff; border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 8px; text-decoration: none; font-size: 1rem; font-weight: 600; transition: 0.2s; }
+        .web-link-btn:hover { background: var(--accent-primary); color: #ffffff; border-color: var(--accent-primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Top Navigation Bar -->
+    <div class="top-navbar">
+        <a href="index.html" class="btn-home">← กลับหน้าหลัก</a>
+    </div>
+
+    <header>
+        <h1>CLAUDE AI PRO PROMPT STUDIO</h1>
+        <p>สร้าง System Prompts & XML Instruction ระดับมืออาชีพ สำหรับงาน Coding / Dev</p>
+    </header>
+
+    <!-- Creator Info Badge -->
+    <div class="creator-badge">
+        <div class="creator-info">
+            👨‍💻&nbsp;&nbsp;<strong>ผู้สร้างและพัฒนา:</strong>&nbsp;Anthropic (Dario Amodei, Daniela Amodei และทีมงาน)
+        </div>
+    </div>
+
+    <!-- Top Technical Specific Selectors -->
+    <div class="tech-selector">
+        <div class="tech-card active-fs" id="card-fs" onclick="selectTechMode('fs')">
+            <div class="card-title"><span class="tag-orange">⚡ Full-Stack & Refactor</span> <span>System Spec</span></div>
+            <p style="font-size: 0.98rem; color: var(--text-dim); margin-top: 4px;">วางสถาปัตยกรรม เขียน Clean Code และเพิ่มประสิทธิภาพซอฟต์แวร์</p>
+        </div>
+        <div class="tech-card" id="card-sec" onclick="selectTechMode('sec')">
+            <div class="card-title"><span class="tag-purple">🛡️ Security & Code Audit</span> <span>OWASP & Logic</span></div>
+            <p style="font-size: 0.98rem; color: var(--text-dim); margin-top: 4px;">ตรวจสอบช่องโหว่ความปลอดภัย ตรรกะผิดพลาด และ Edge cases</p>
+        </div>
+        <div class="tech-card" id="card-test" onclick="selectTechMode('test')">
+            <div class="card-title"><span class="tag-emerald">🧪 Test Suite & Edge Cases</span> <span>Unit/Integration</span></div>
+            <p style="font-size: 0.98rem; color: var(--text-dim); margin-top: 4px;">สร้างเคสทดสอบครอบคลุมทุกสภาวะ (Mocking & Boundary conditions)</p>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+        <!-- Input Panel -->
+        <div class="panel">
+            <div>
+                <div class="panel-header">
+                    <div class="panel-title">⚙️ กำหนดสเปกงาน (Input)</div>
+                </div>
+                
+                <div class="input-group">
+                    <label id="lbl_subject">รายละเอียดฟังก์ชัน / โค้ดที่ต้องการพัฒนา</label>
+                    <textarea id="inp_subject" rows="5" placeholder="เช่น: ระบบ Authentication ด้วย JWT รองรับ Refresh Token และ Role-Based Access Control (RBAC)" oninput="generatePrompt()"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>กำหนดบทบาทเชิงเทคนิค (Technical Role)</label>
+                    <input type="text" id="inp_role" value="Principal Full-Stack Architect & Security Specialist" oninput="generatePrompt()">
+                </div>
+
+                <div class="input-group">
+                    <label>ข้อกำหนดเพิ่มเติม (Tech Stack / Constraints)</label>
+                    <input type="text" id="inp_constraints" placeholder="เช่น: Node.js (TypeScript), PostgreSQL, Docker, Strict Error Handling" oninput="generatePrompt()">
+                </div>
+
+                <div class="input-group">
+                    <label>ภาษาสำหรับ Output Prompt</label>
+                    <select id="inp_lang" onchange="generatePrompt()">
+                        <option value="en">English (แนะนำสูงสุดสำหรับ Claude)</option>
+                        <option value="th">ภาษาไทย (Thai Context)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel">
+            <div>
+                <div class="panel-header">
+                    <div class="panel-title">📄 Ready Prompt Structure (22px)</div>
+                </div>
+                <div class="output-box" id="prompt_output"></div>
+            </div>
+
+            <button class="btn btn-purple" style="margin-top: 16px;" onclick="copyPrompt()">
+                📋 คัดลอก Prompt นำไปใช้ใน Claude
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Tutorials Section -->
+    <div class="video-banner">
+        <div class="video-info">
+            <div class="panel-title">
+                🎬 วิดีโอแนะนำวิธีใช้งาน & เทคนิคการสั่ง AI เขียนโค้ด
+            </div>
+            <p class="panel-desc">
+                ดูวิดีโอตัวอย่างสั้นๆ เพื่อเรียนรู้วิธีการปรับแต่ง Prompt ให้ได้ผลลัพธ์ระดับโปร:
+            </p>
+        </div>
+        <a href="https://youtu.be/YkwGwMh7g7c" target="_blank" class="yt-btn">▶ ดูคลิปบน YouTube</a>
+    </div>
+
+    <!-- Video Selector List -->
+    <div class="video-playlist">
+        <button class="video-thumb active" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', this)">▶️ 1. วิธีใช้ Prompt Studio เบื้องต้น</button>
+        <button class="video-thumb" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', this)">▶️ 2. เทคนิคการสั่ง Claude ให้ Refactor โค้ด</button>
+        <button class="video-thumb" onclick="changeVideo('https://www.youtube.com/embed/dQw4w9WgXcQ', this)">▶️ 3. การทำ Security Audit ด้วย System Prompt</button>
+    </div>
+
+    <!-- External Skill Websites Section -->
+    <div class="skills-hub">
+        <div class="panel-header" style="margin-bottom: 6px;">
+            <div class="panel-title">🌐 External Skill Libraries & Prompt Hubs</div>
+        </div>
+        <p style="color: var(--text-dim); font-size: 1.05rem;">รวมเว็บคลังสกิล Prompt และ System Prompts สำเร็จรูปที่ลงไว้แล้ว กดเพื่อเปิดไปยังเว็บนั้นทันที:</p>
+
+        <div class="skills-grid">
+            <a href="https://docs.anthropic.com/en/prompt-library/library" target="_blank" class="web-card">
+                <div>
+                    <div class="web-title"><span>🟧 Anthropic Prompt Library</span> <span>↗</span></div>
+                    <div class="web-desc">คลัง Prompt ทางการจากผู้สร้าง Claude รวมไอเดียการเขียนโค้ดและวิเคราะห์ข้อมูลระดับมืออาชีพ</div>
+                </div>
+                <div class="web-action">เปิดเว็บไซต์ Anthropic ➔</div>
+            </a>
+            <a href="https://github.com/danielmiessler/fabric" target="_blank" class="web-card">
+                <div>
+                    <div class="web-title"><span>🧵 Fabric System Prompts</span> <span>↗</span></div>
+                    <div class="web-desc">คลัง System Prompts สายโหดสไตล์ Hacker/Dev บน GitHub สำหรับงาน Code Review, Audit และ Extract Data</div>
+                </div>
+                <div class="web-action">ไปที่ GitHub Fabric ➔</div>
+            </a>
+            <a href="https://github.com/f/awesome-chatgpt-prompts" target="_blank" class="web-card">
+                <div>
+                    <div class="web-title"><span>⚡ Awesome System Prompts</span> <span>↗</span></div>
+                    <div class="web-desc">แหล่งรวมบทบาท Persona สกิลเฉพาะทางสำหรับ AI โมเดลระดับสูงทุกชนิด</div>
+                </div>
+                <div class="web-action">ไปที่ GitHub Repo ➔</div>
+            </a>
+            <a href="https://flowgpt.com/c/coding" target="_blank" class="web-card">
+                <div>
+                    <div class="web-title"><span>💻 FlowGPT Coding Community</span> <span>↗</span></div>
+                    <div class="web-desc">ชุมชนแจก Prompt และสกิลการเขียนโค้ดภาษาต่างๆ ที่ได้รับการโหวตสูงสุดจาก Dev ทั่วโลก</div>
+                </div>
+                <div class="web-action">เปิด FlowGPT Coding ➔</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Links Footer -->
+    <div class="links-bar">
+        <div style="font-weight: 700; font-size: 1.1rem; color: var(--text);">🚀 ทางลัดเปิดใช้งาน:</div>
+        <div class="links-group">
+            <a href="https://claude.ai" target="_blank" class="web-link-btn">🌐 เปิด Claude.ai</a>
+            <a href="https://console.anthropic.com" target="_blank" class="web-link-btn">🔑 Anthropic Console (API)</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentMode = 'fs';
+
+    function changeVideo(url, btnElement) {
+        const buttons = document.querySelectorAll('.video-thumb');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+    }
+
+    function selectTechMode(mode) {
+        currentMode = mode;
+        document.getElementById('card-fs').className = 'tech-card' + (mode === 'fs' ? ' active-fs' : '');
+        document.getElementById('card-sec').className = 'tech-card' + (mode === 'sec' ? ' active-sec' : '');
+        document.getElementById('card-test').className = 'tech-card' + (mode === 'test' ? ' active-test' : '');
+        
+        const lbl = document.getElementById('lbl_subject');
+        const role = document.getElementById('inp_role');
+
+        if (mode === 'fs') {
+            lbl.innerText = 'รายละเอียดฟังก์ชัน / โค้ดที่ต้องการพัฒนา';
+            if(!role.value || role.value.includes("Security") || role.value.includes("QA")) {
+                role.value = 'Principal Full-Stack Architect';
+            }
+        } else if (mode === 'sec') {
+            lbl.innerText = 'ระบบ หรือ Source Code ที่ต้องการ Audit ความปลอดภัย';
+            role.value = 'Senior Application Security Engineer (AppSec)';
+        } else if (mode === 'test') {
+            lbl.innerText = 'ฟังก์ชัน หรือ Logic ที่ต้องการเขียนชุดทดสอบ (Test Suite)';
+            role.value = 'Principal QA Automation & Software Engineer';
+        }
+        generatePrompt();
+    }
+
+    function generatePrompt() {
+        const subject = document.getElementById('inp_subject').value || "[Specify system, feature, or code to build]";
+        const role = document.getElementById('inp_role').value || "Technical Specialist";
+        const constraints = document.getElementById('inp_constraints').value || "Clean Architecture, Industry Best Practices";
+        const lang = document.getElementById('inp_lang').value;
+        let prompt = "";
+
+        if (lang === 'th') {
+            if (currentMode === 'fs') {
+                prompt = `<role>\nคุณคือ ${role}\n</role>\n\n<context>\nเป้าหมายและโจทย์งาน:\n${subject}\n\nข้อกำหนดทางเทคนิค (Constraints):\n${constraints}\n</context>\n\n<instructions>\n1. อธิบาย Architectural Design และ Data Flow สั้นๆ\n2. เขียนโค้ดฉบับเต็ม (Production-Ready) พร้อม Type Safety และ Error Handling\n3. สรุป Time/Space Complexity และจุดชี้แนะการปรับแต่งให้ Scale ได้ง่าย\n</instructions>\n\n<formatting>\nตอบกลับโดยแบ่งส่วนด้วย Markdown Heading และ Code Block ที่ชัดเจน\n</formatting>`;
+            } else if (currentMode === 'sec') {
+                prompt = `<role>\nคุณคือ ${role}\n</role>\n\n<context>\nระบบหรือโค้ดที่ต้องทำการ Audit ความปลอดภัย:\n${subject}\n\nสภาพแวดล้อมและเทคโนโลยี:\n${constraints}\n</context>\n\n<instructions>\n1. ตรวจสอบหาจุดเสี่ยงด้านความปลอดภัย (Vulnerabilities, OWASP Top 10, Logic Flaws)\n2. ให้คะแนนความเสี่ยง (Risk Severity: Critical, High, Medium, Low)\n3. เขียน โค้ดฉบับแก้ไข (Patched Code) ที่ปิดช่องโหว่เรียบร้อยแล้ว\n</instructions>`;
+            } else if (currentMode === 'test') {
+                prompt = `<role>\nคุณคือ ${role}\n</role>\n\n<context>\nฟังก์ชัน/ระบบที่ต้องเขียน Test Cases:\n${subject}\n\nเครื่องมือและกรอบข้อกำหนด:\n${constraints}\n</context>\n\n<instructions>\n1. ระบุรายการ Test Scenarios ให้ครอบคลุมทั้ง Happy Path, Edge Cases และ Error Handling\n2. เขียนโค้ด Test Suite ฉบับเต็มพร้อมการ Mocking ข้อมูลภายนอกอย่างถูกต้อง\n3. ระบุข้อควรระวังเรื่อง Flaky Tests และการวัดผล Coverage\n</instructions>`;
+            }
+        } else {
+            if (currentMode === 'fs') {
+                prompt = `<role>\nYou are a ${role}.\n</role>\n\n<context>\nTask Specification:\n${subject}\n\nTechnical Stack & Constraints:\n${constraints}\n</context>\n\n<instructions>\n1. Provide a concise architectural overview & design choices.\n2. Output production-ready, fully-typed code with strict error handling.\n3. Include Time/Space complexity analysis and performance optimization tips.\n</instructions>\n\n<formatting>\nOrganize response with clear Markdown headers and production code blocks.\n</formatting>`;
+            } else if (currentMode === 'sec') {
+                prompt = `<role>\nYou are a ${role}.\n</role>\n\n<context>\nCodebase/System to Security Audit:\n${subject}\n\nTech Environment & Constraints:\n${constraints}\n</context>\n\n<instructions>\n1. Audit for security flaws, race conditions, OWASP vulnerabilities, and logic bugs.\n2. Classify findings by Severity (Critical, High, Medium, Low).\n3. Provide the secure, patched code implementation resolving all identified risks.\n</instructions>`;
+            } else if (currentMode === 'test') {
+                prompt = `<role>\nYou are a ${role}.\n</role>\n\n<context>\nTarget Functionality for Testing:\n${subject}\n\nTesting Stack & Constraints:\n${constraints}\n</context>\n\n<instructions>\n1. Map out comprehensive test scenarios (Happy Path, Boundary Conditions, Failure Modes).\n2. Write production-grade Test Suites with proper isolation and mocking.\n3. Ensure test determinism and prevent flaky assertions.\n</instructions>`;
+            }
+        }
+        document.getElementById('prompt_output').innerText = prompt;
+    }
+
+    function copyPrompt() {
+        const promptText = document.getElementById('prompt_output').innerText;
+        navigator.clipboard.writeText(promptText);
+        alert("คัดลอก Prompt เรียบร้อยแล้ว! วางใน Claude.ai ได้เลยครับ");
+    }
+
+    selectTechMode('fs');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หมวดหมู่: งานนำเสนอ & สไลด์ - Gamma AI</title>
+    <style>
+        :root {
+            --primary-accent: #7C3AED;   /* สีม่วงเข้ม Vibrant Violet */
+            --dark-text: #0F172A;        /* สีน้ำเงินเข้ม Slate */
+            --secondary-accent: #EC4899; /* สีชมพู Magenta */
+            --bg-color: #FAF5FF;         /* สีม่วงลาเวนเดอร์อ่อนมาก */
+            --panel-bg: #ffffff;
+            --border-color: #e9d5ff;
+            --light-badge-bg: #f3e8ff;
+            --light-badge-text: #6b21a8;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--dark-text); padding: 20px; font-size: 22px; }
+        
+        .back-btn { display: inline-block; margin-bottom: 20px; color: var(--primary-accent); text-decoration: none; font-weight: bold; font-size: 22px; }
+        .back-btn:hover { text-decoration: underline; color: var(--secondary-accent); }
+
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { font-size: 2.2rem; color: var(--dark-text); margin-bottom: 8px; }
+
+        .category-container { display: flex; justify-content: center; margin-bottom: 25px; }
+        .category-badge { background-color: var(--primary-accent); color: #ffffff; padding: 10px 24px; border-radius: 50px; font-size: 22px; font-weight: bold; }
+
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .creator-badge { text-align: center; margin-bottom: 25px; width: 100%; }
+        .creator-info { font-size: 22px; color: var(--dark-text); line-height: 1.6; display: inline-block; }
+
+        .ai-card { background: var(--panel-bg); border-radius: 16px; padding: 1.8rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08); border: 1px solid var(--border-color); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .badge { background-color: var(--light-badge-bg); color: var(--light-badge-text); padding: 0.4rem 1rem; border-radius: 15px; font-size: 22px; font-weight: bold; }
+
+        /* Tag ตัวกรองหมวดหมู่ Prompt */
+        .tag-filter { display: flex; gap: 8px; margin-bottom: 1.2rem; flex-wrap: wrap; }
+        .tag { background-color: #f3e8ff; color: var(--dark-text); border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 20px; font-size: 22px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .tag.active, .tag:hover { background-color: var(--primary-accent); color: white; border-color: var(--primary-accent); }
+
+        /* Box สำหรับ Prompt */
+        .prompt-box { background-color: var(--bg-color); border: 1.5px solid var(--border-color); border-radius: 12px; padding: 1.2rem; margin: 1rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .prompt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-weight: bold; color: var(--dark-text); font-size: 22px; }
+        
+        .prompt-tags { display: flex; gap: 6px; margin-bottom: 8px; }
+        .mini-tag { font-size: 18px; padding: 4px 10px; border-radius: 4px; background: var(--light-badge-bg); color: var(--light-badge-text); font-weight: 600; }
+        
+        .copy-btn { background-color: var(--primary-accent); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 22px; font-weight: bold; transition: background 0.2s, transform 0.1s; }
+        .copy-btn:hover { background-color: var(--secondary-accent); }
+        .copy-btn:active { transform: scale(0.96); }
+        .copy-btn.copied { background-color: #10b981; }
+        
+        textarea { width: 100%; min-height: 140px; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-color); resize: vertical; background-color: #ffffff; font-size: 22px; line-height: 1.6; color: var(--dark-text); outline: none; }
+        textarea:focus { border-color: var(--primary-accent); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2); }
+
+        /* Interactive Inputs ช่วยเติมคำใน Prompt */
+        .input-builder { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .input-builder input { padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border-color); font-size: 22px; outline: none; color: var(--dark-text); }
+        .input-builder input:focus { border-color: var(--primary-accent); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2); }
+
+        /* Section เทคนิค */
+        .tips-section { background-color: #f3e8ff; border: 1.5px dashed var(--primary-accent); border-radius: 12px; padding: 1.2rem; margin-top: 1.5rem; }
+        .tips-title { font-weight: bold; color: var(--primary-accent); margin-bottom: 0.8rem; font-size: 22px; display: flex; align-items: center; gap: 6px; }
+        .tips-list { list-style: none; }
+        .tips-list li { margin-bottom: 0.6rem; font-size: 22px; color: var(--dark-text); line-height: 1.6; position: relative; padding-left: 24px; }
+        .tips-list li::before { content: "•"; color: var(--primary-accent); font-weight: bold; font-size: 1.6rem; position: absolute; left: 0; top: -2px; }
+
+        /* Action Buttons */
+        .action-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+        .launch-btn { background-color: var(--primary-accent); color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 22px; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s; }
+        .launch-btn:hover { background-color: var(--secondary-accent); }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← กลับหน้าหลัก</a>
+
+    <header>
+        <h1>AI แนะนำสำหรับ งานนำเสนอ & สไลด์</h1>
+    </header>
+
+    <div class="category-container">
+        <div class="category-badge">หัวข้อ: งานนำเสนอ & สไลด์</div>
+    </div>
+
+    <!-- ย้าย Creator Info Badge มาอยู่ใน .container เพื่อให้อยู่กึ่งกลางหน้าจอความกว้างเท่ากับกล่อง AI -->
+    <div class="container">
+
+        <div class="creator-badge">
+            <div class="creator-info">
+                👨‍💻 <strong>ผู้สร้างและพัฒนา:</strong> Grant Lee <br> ทีมและบุคคลสำคัญ: Jon Berger, James Dunthorne
+            </div>
+        </div>
+		
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p style="font-size: 22px; color: var(--dark-text);">🎯 <b>วัตถุประสงค์:</b> การเป็นแพลตฟอร์มช่วยสร้างและออกแบบสื่อนำเสนอด้วยปัญญาประดิษฐ์ </p>
+        </div>
+
+        <div class="ai-card">
+            <div class="card-header">
+                <h2>Gamma AI</h2>
+                <span class="badge">ผู้สร้าง: Gamma</span>
+            </div>
+            <p style="color: var(--dark-text); font-size: 22px; line-height: 1.6; margin-bottom: 15px;">
+                <strong>คำแนะนำการใช้งาน:</strong> เครื่องมือสร้างสไลด์ พรีเซนเทชัน หน้าเว็บ และเอกสารสรุปอัตโนมัติด้วย AI จัดดีไซน์ให้ออกมาสวยงามพร้อมใช้งานได้รวดเร็ว
+            </p>
+
+            <!-- ตัวกรองตามการใช้งาน -->
+            <div class="tag-filter">
+                <button class="tag active" onclick="filterPrompts('all')">ทั้งหมด</button>
+                <button class="tag" onclick="filterPrompts('basic')">เริ่มต้น</button>
+                <button class="tag" onclick="filterPrompts('pro')">ขั้นสูง (Pro)</button>
+            </div>
+
+            <!-- 1. Interactive Custom Prompt -->
+            <div class="prompt-box" data-category="basic">
+                <div class="prompt-header">
+                    <span>1. สไลด์พรีเซนเทชัน (แบบปรับตามใจชอบ)</span>
+                    <button class="copy-btn" onclick="copyText('p_pres', this)">ก็อปปี้ Prompt</button>
+                </div>
+                <div class="prompt-tags"><span class="mini-tag">เริ่มต้น</span><span class="mini-tag">นิยมใช้</span></div>
+                
+                <div class="input-builder">
+                    <input type="text" id="in_topic" placeholder="ระบุหัวข้อ (เช่น การตลาดออนไลน์)" oninput="updatePrompt()">
+                    <input type="text" id="in_slides" placeholder="จำนวนสไลด์ (เช่น 8)" oninput="updatePrompt()">
+                </div>
+                
+                <textarea id="p_pres" readonly>สร้างพรีเซนเทชันจำนวน 8 สไลด์ ในหัวข้อ "การตลาดออนไลน์ 2026" สำหรับกลุ่มผู้ฟังที่เป็นนักศึกษาและผู้ประกอบการ โทนภาษาเข้าใจง่าย โดยเน้นประเด็นสำคัญ: ประโยชน์, เครื่องมือแนะนำ, และข้อควรระวัง</textarea>
+            </div>
+
+            <!-- 2. Markdown Custom Outline (ขั้นสูง) -->
+            <div class="prompt-box" data-category="pro">
+                <div class="prompt-header">
+                    <span>2. Markdown Control (ล็อกโครงสร้างไม่ให้ AI มั่ว)</span>
+                    <button class="copy-btn" onclick="copyText('p_md', this)">ก็อปปี้ Prompt</button>
+                </div>
+                <div class="prompt-tags"><span class="mini-tag">ขั้นสูง</span><span class="mini-tag">เน้นเนื้อหาเป๊ะ</span></div>
+                <textarea id="p_md" readonly>สร้างสไลด์จาก Outline ต่อไปนี้เท่านั้น ห้ามแต่งเนื้อหาเพิ่ม:
+# Slide 1: Executive Summary
+- ภาพรวมโปรเจกต์ปี 2026
+# Slide 2: Market Analysis
+- กลุ่มเป้าหมายหลัก และคู่แข่งสำคัญ
+# Slide 3: Financial Projections
+- งบประมาณการลงทุนและจุดคุ้มทุน (ROI)
+เน้นการจัดวางในรูปแบบ ตาราง (Table) และ Card Layout เพื่อให้สแกนอ่านง่าย</textarea>
+            </div>
+
+            <!-- 3. Minimal Visual First (ขั้นสูง) -->
+            <div class="prompt-box" data-category="pro">
+                <div class="prompt-header">
+                    <span>3. Minimal Visual-First (เน้นรูป สไลด์สไตล์ Apple)</span>
+                    <button class="copy-btn" onclick="copyText('p_visual', this)">ก็อปปี้ Prompt</button>
+                </div>
+                <div class="prompt-tags"><span class="mini-tag">ขั้นสูง</span><span class="mini-tag">สไลด์สวยงาม</span></div>
+                <textarea id="p_visual" style="min-height: 160px;" readonly>สร้าง Presentation สไตล์ Minimalist หัวข้อ "[ใส่หัวข้อ]" จำนวน 5 สไลด์
+- กฎเหล็ก: ข้อความรวมทั้งสไลด์ไม่เกิน 30 คำ (Short & Punchy)
+- 1 สไลด์ = 1 ไอเดียหลักเท่านั้น (One idea per slide)
+- สั่ง AI เจนภาพประกอบในสไลด์ให้เป็นสไตล์: 3D Render, Modern Clean Visual
+- ใช้ Bullet points ไม่เกิน 3 ข้อต่อสไลด์</textarea>
+            </div>
+
+            <!-- 4. Webpage One-Pager -->
+            <div class="prompt-box" data-category="basic">
+                <div class="prompt-header">
+                    <span>4. สร้างหน้าเว็บ One-Page</span>
+                    <button class="copy-btn" onclick="copyText('p_web', this)">ก็อปปี้ Prompt</button>
+                </div>
+                <div class="prompt-tags"><span class="mini-tag">เริ่มต้น</span><span class="mini-tag">Webpage</span></div>
+                <textarea id="p_web" readonly>สร้างหน้าเว็บแบบ One-page ในหัวข้อ "[ชื่อโปรเจกต์/สินค้า]" เพื่อเป้าหมายแนะนำสินค้า โดยแบ่งเป็นส่วนๆ ดังนี้: Hero Section, คุณสมบัติเด่น, รีวิว/ข้อดี, และ Call to Action</textarea>
+            </div>
+
+            <!-- เทคนิคเสริม -->
+            <div class="tips-section">
+                <div class="tips-title">💡 เทคนิคเสริมในการใช้งาน Gamma AI ให้ได้ผลดีที่สุด</div>
+                <ul class="tips-list">
+                    <li><strong>ใช้วิธี Generate from Text:</strong> นำ Prompt แบบ Markdown ด้านบนไปวางในช่อง Paste Text ใน Gamma จะได้สไลด์ตรงสเปกที่สุด 100%</li>
+                    <li><strong>ใช้ปุ่ม "Preserve Text":</strong> หากมีข้อความเตรียมไว้แล้ว ให้เลือกตัวเลือกนี้ เพื่อป้องกันไม่ให้ AI แต่งเนื้อหาเพิ่มจนผิดเพี้ยน</li>
+                    <li><strong>ระบุสไตล์ภาพประกอบ:</strong> สามารถพิมพ์คำว่า <code>Use 3D illustrations</code> หรือ <code>Use real photography</code> ต่อท้ายใน Prompt ได้</li>
+                </ul>
+            </div>
+
+            <!-- ปุ่มเปิดใช้งานด้านล่างสุด -->
+            <div class="action-row">
+                <span style="font-size: 22px; color: var(--dark-text);">พร้อมใช้งานแล้วหรือยัง?</span>
+                <a href="https://gamma.app" target="_blank" rel="noopener noreferrer" class="launch-btn">
+                    เปิดใช้งาน Gamma AI ↗
+                </a>
+            </div>
+
+            <!-- กล่องแนะนำวิดีโอ YouTube ท้ายสุด -->
+            <div class="video-box" style="display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--primary-accent); border-radius: 8px; padding: 12px 16px; margin-top: 20px; background-color: #ffffff;">
+                <div class="video-text">
+                    <strong style="font-size: 22px; color: var(--dark-text);">🎬 วิดีโอแนะนำการใช้งาน Gamma AI:</strong><br>
+                    <span style="font-size: 20px; color: #475569;">รับชมคลิปสอนใช้งานอย่างละเอียดบน YouTube</span>
+                </div>
+                <a href="https://youtu.be/HvR_oDBgVVU?si=-KxSfsysyMUrvw9c" target="_blank" class="yt-btn" style="background-color: #ff0000; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-size: 22px; font-weight: bold; white-space: nowrap;">
+                    ▶ ดูคลิปบน YouTube
+                </a>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function updatePrompt() {
+            const topic = document.getElementById('in_topic').value || "[ชื่อหัวข้อ]";
+            const slides = document.getElementById('in_slides').value || "[จำนวน]";
+            const targetTextarea = document.getElementById('p_pres');
+
+            targetTextarea.value = `สร้างพรีเซนเทชันจำนวน ${slides} สไลด์ ในหัวข้อ "${topic}" สำหรับกลุ่มผู้ฟังที่เกี่ยวข้อง โทนภาษาเข้าใจง่าย กระชับ โดยเน้นประเด็นสำคัญ: ประโยชน์หลัก, ขั้นตอนการทำงาน, และข้อเสนอแนะ`;
+        }
+
+        function filterPrompts(category) {
+            const boxes = document.querySelectorAll('.prompt-box');
+            const buttons = document.querySelectorAll('.tag');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            boxes.forEach(box => {
+                if (category === 'all' || box.getAttribute('data-category') === category) {
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = 'none';
+                }
+            });
+        }
+
+        async function copyText(elementId, btn) {
+            const textarea = document.getElementById(elementId);
+            try {
+                await navigator.clipboard.writeText(textarea.value);
+                const originalText = btn.innerText;
+                btn.innerText = "คัดลอกแล้ว! ✓";
+                btn.classList.add("copied");
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove("copied");
+                }, 2000);
+            } catch (err) {
+                textarea.select();
+                document.execCommand("copy");
+                alert("คัดลอก Prompt เรียบร้อยแล้ว!");
+            }
+        }
+    </script>
+</body>
+</html>

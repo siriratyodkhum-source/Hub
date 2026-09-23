@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok AI - Live News & Social Media Studio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --bg-input: #F8FAFC;
+            --accent: #000000;
+            --accent-glow: rgba(0, 0, 0, 0.1);
+            --accent-hover: #2563EB;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border: #CBD5E1;
+            --border-focus: #2563EB;
+        }
+
+        /* กำหนดขนาดฟอนต์พื้นฐานเป็น 22px */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Top Navigation & Header */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 22px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 99px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #FFFFFF;
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateX(-2px);
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 22px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-hover);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-hover);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        header h1 span {
+            color: var(--accent-hover);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 22px;
+            font-weight: 400;
+        }
+
+        /* Creator Info Badge จัดให้อยู่ตรงกลาง */
+        .creator-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .creator-info {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 22px;
+            color: var(--text-main);
+        }
+
+        /* Main Content Layout (Grid) */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 992px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card System */
+        .card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        /* Interactive Builder Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 22px;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .input-select, .input-text {
+            width: 100%;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 22px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .input-select:focus, .input-text:focus {
+            border-color: var(--accent-hover);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .output-box {
+            position: relative;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 22px;
+            color: var(--text-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 22px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            height: 160px;
+        }
+
+        /* Copy & Action Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #FFFFFF;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            color: var(--text-main);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-hover);
+            color: #FFFFFF;
+            border-color: var(--accent-hover);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 22px;
+        }
+
+        .btn-copied {
+            background: var(--accent-hover) !important;
+            color: #FFFFFF !important;
+            border-color: var(--accent-hover) !important;
+        }
+
+        /* Filter Tabs */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-chip {
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 22px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active, .filter-chip:hover {
+            background: var(--accent);
+            color: #FFFFFF;
+            border-color: var(--accent);
+        }
+
+        /* Preset Prompt Cards List */
+        .prompt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .prompt-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .prompt-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .preset-card {
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+
+        .preset-card:hover {
+            border-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .preset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .preset-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .preset-body {
+            font-size: 22px;
+            color: var(--text-main);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            background: #FFFFFF;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        /* Bottom External Action Area */
+        .action-banner {
+            margin-top: 24px;
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .action-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .video-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #FFFFFF;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <div class="top-bar">
+            <a href="index.html" class="back-btn">
+                <span>←</span> กลับหน้าหลัก
+            </a>
+            <div class="live-badge">
+                <span class="live-dot"></span>
+                X Real-Time Data Connected
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <h1>Grok <span>Studio</span></h1>
+            <p>ระบบสร้าง Prompt เจาะลึกข่าวสาร ข่าวด่วน และวิเคราะห์เทรนด์ Social Media</p>
+        </header>
+        
+        <!-- Creator Info Badge -->
+        <div class="creator-badge">
+            <div class="creator-info">
+                👨‍💻 <strong>ผู้สร้างและพัฒนา:</strong> Anthropic (Dario Amodei, Daniela Amodei และทีมงาน)
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 24px;">
+            <p style="font-size: 22px; color: var(--text-main);">🎯 <b>วัตถุประสงค์:</b> การเป็นเครื่องมือและพื้นที่ช่วยสร้างคำสั่ง (Prompt Studio / Prompt Builder)สำหรับใช้งานร่วมกับ Grok AI</p>
+        </div>
+        
+        <!-- Main Content (2 Columns) -->
+        <div class="main-grid">
+            
+            <!-- Column 1: Dynamic Prompt Builder -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>⚡</span> Custom Prompt Builder
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">เลือกบทบาท (Role)</label>
+                    <select id="b_role" class="input-select" onchange="generateCustomPrompt()">
+                        <option value="คุณคือ นักข่าวสายสืบสวนและผู้เชี่ยวชาญด้าน Social Media Trends">นักข่าวสายสืบสวน & Trend Hunter</option>
+                        <option value="คุณคือ นักวิเคราะห์ข่าวสารด่วน (Breaking News Analyst) ที่เน้นความถูกต้องและรวดเร็ว">นักวิเคราะห์ข่าวด่วน (Breaking News)</option>
+                        <option value="คุณคือ ครีเอเตอร์สรุปข่าว ที่เน้นย่อยประเด็นยากๆ ให้เข้าใจง่ายภายใน 1 นาที">ครีเอเตอร์ย่อยข่าว (Content Creator)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">เลือกรูปแบบการตอบ (Format)</label>
+                    <select id="b_format" class="input-select" onchange="generateCustomPrompt()">
+                        <option value="สรุปเป็น ไทม์ไลน์เหตุการณ์ (Timeline) เรียงตามลำดับเวลา">ไทม์ไลน์เหตุการณ์ (Timeline)</option>
+                        <option value="สรุปเป็น 3 ประเด็นหลัก + เสียงสะท้อนจากชาวเน็ต (Social Sentiment)">สรุป 3 ประเด็นหลัก + เสียงชาวเน็ต</option>
+                        <option value="สรุปวิเคราะห์ข้อเท็จจริง vs ข่าวลือ (Fact Check)">ตรวจสอบข้อเท็จจริง (Fact-Check)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">หัวข้อข่าว หรือ คีย์เวิร์ด</label>
+                    <input type="text" id="b_topic" class="input-text" placeholder="เช่น: #ข่าวด่วนวันนี้, หุ้นเทคโนโลยี, สรุปดราม่า..." oninput="generateCustomPrompt()">
+                </div>
+
+                <div class="output-box">
+                    <div class="output-header">
+                        <span>Generated Prompt</span>
+                        <button class="btn btn-primary btn-sm" onclick="copyText('custom_prompt_out', this)">
+                            📋 คัดลอก Prompt
+                        </button>
+                    </div>
+                    <textarea id="custom_prompt_out" readonly></textarea>
+                </div>
+            </div>
+
+            <!-- Column 2: Preset Templates -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📚</span> Prompt Templates
+                    </div>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="filter-bar">
+                    <button class="filter-chip active" onclick="filterCategory('all', this)">ทั้งหมด</button>
+                    <button class="filter-chip" onclick="filterCategory('trend', this)">เทรนด์ Social</button>
+                    <button class="filter-chip" onclick="filterCategory('breaking', this)">ข่าวด่วน</button>
+                    <button class="filter-chip" onclick="filterCategory('fact', this)">Fact-Check</button>
+                </div>
+
+                <!-- Prompt Cards Scroll Area -->
+                <div class="prompt-list">
+                    
+                    <!-- Item 1 -->
+                    <div class="preset-card" data-cat="trend">
+                        <div class="preset-header">
+                            <span class="preset-title">1. วิเคราะห์กระแส & Sentiment บน X</span>
+                            <button class="btn btn-secondary btn-sm" onclick="copyPreset('prompt1', this)">📋 คัดลอก</button>
+                        </div>
+                        <div class="preset-body" id="prompt1">[Role] คุณคือ ผู้เชี่ยวชาญด้านการวิเคราะห์กระแส Social Media
+[Task] ช่วยวิเคราะห์แฮชแท็ก/เทรนด์ [ใส่เรื่อง/แฮชแท็ก] บน X ในขณะนี้
+[Format] สรุปเป็น: 1) ต้นสายปลายเหตุ 2) เสียงสะท้อนสังคม 2 ฝั่ง 3) สรุปภาพรวม 2 บรรทัด</div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="preset-card" data-cat="breaking">
+                        <div class="preset-header">
+                            <span class="preset-title">2. เกาะติดข่าวด่วน Real-Time</span>
+                            <button class="btn btn-secondary btn-sm" onclick="copyPreset('prompt2', this)">📋 คัดลอก</button>
+                        </div>
+                        <div class="preset-body" id="prompt2">[Role] คุณคือ ผู้สื่อข่าวสายข่าวด่วนระดับโลก
+[Task] ค้นหาอัปเดตล่าสุดของเหตุการณ์ [ใส่ชื่อเหตุการณ์] ที่กำลังเกิดขึ้นตอนนี้
+[Format] สรุปเป็น ไทม์ไลน์เวลา (Timeline) ตั้งแต่เริ่มต้นจนถึงล่าสุด พร้อมอ้างอิงแหล่งข่าว</div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="preset-card" data-cat="fact">
+                        <div class="preset-header">
+                            <span class="preset-title">3. เช็กข่าวปลอม & Fact-Check</span>
+                            <button class="btn btn-secondary btn-sm" onclick="copyPreset('prompt3', this)">📋 คัดลอก</button>
+                        </div>
+                        <div class="preset-body" id="prompt3">[Role] คุณคือ นักบรรณาธิการตรวจสอบข้อเท็จจริง (Fact-Checker)
+[Task] ช่วยตรวจสอบกระแสข่าวเรื่อง [ระบุข้อความ/ข่าว] ว่าเป็นจริง ข่าวลือ หรือข่าวปลอม
+[Format] ทำตารางเปรียบเทียบ: ข้อกล่าวหา | ข้อเท็จจริง | หลักฐานอ้างอิงล่าสุด</div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="preset-card" data-cat="trend">
+                        <div class="preset-header">
+                            <span class="preset-title">4. เปลี่ยนข่าวร้อนเป็นโพสต์ โซเชียล</span>
+                            <button class="btn btn-secondary btn-sm" onclick="copyPreset('prompt4', this)">📋 คัดลอก</button>
+                        </div>
+                        <div class="preset-body" id="prompt4">[Role] คุณคือ ครีเอเตอร์ผู้เชี่ยวชาญการเขียนคอนเทนต์ไวรัล
+[Task] นำข่าวเรื่อง [ใส่หัวข้อข่าว] มาสรุปเป็นโพสต์สำหรับลง X / Facebook
+[Format] อ่านจบใน 30 วินาที + Bullet Points 3 ข้อ + แฮชแท็กติดเทรนด์</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Action Banner -->
+        <div class="action-banner">
+            <div>
+                <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; color: var(--text-main);">พร้อมนำคำสั่งไปใช้งาน?</h3>
+                <p style="color: var(--text-muted); font-size: 22px;">เปิดใช้งาน Grok AI บน X เพื่อค้นหาข้อมูลและเทรนด์ข่าวแบบเรียลไทม์ได้ทันที</p>
+            </div>
+            <a href="https://grok.x.ai" target="_blank" class="btn btn-primary">
+                เปิด Grok AI 🚀
+            </a>
+        </div>
+
+        <!-- กล่องแนะนำวิดีโอ YouTube ท้ายสุด -->
+        <div class="video-box">
+            <div class="video-text">
+                <strong style="font-size: 22px; color: var(--text-main);">🎬 วิดีโอแนะนำการใช้งาน Grok AI:</strong><br>
+                <span style="font-size: 22px; color: var(--text-muted);">รับชมคลิปสอนใช้งานอย่างละเอียดบน YouTube</span>
+            </div>
+            <a href="https://youtu.be/m2HQhwS0_C8?si=FnOm_hLM9KBXna3m" target="_blank" class="btn" style="background-color: #FF0000; color: #FFFFFF; font-size: 22px; font-weight: bold; white-space: nowrap;">
+                ▶ ดูคลิปบน YouTube
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function generateCustomPrompt() {
+            const role = document.getElementById('b_role').value;
+            const format = document.getElementById('b_format').value;
+            const topic = document.getElementById('b_topic').value || "[ระบุข่าว/แฮชแท็กที่ต้องการค้นหา]";
+            
+            const result = `[Role] ${role}\n[Task] ช่วยดึงข้อมูลสดล่าสุดเกี่ยวกับข่าว/ประเด็น: "${topic}" จาก Social Media และแหล่งข่าวทั่วโลก\n[Format] ${format} พร้อมแนบลิงก์ที่มาอ้างอิง`;
+
+            document.getElementById('custom_prompt_out').value = result;
+        }
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.querySelectorAll('.preset-card').forEach(card => {
+                if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        async function copyText(id, btn) {
+            const textarea = document.getElementById(id);
+            await navigator.clipboard.writeText(textarea.value);
+            showCopiedState(btn);
+        }
+
+        async function copyPreset(id, btn) {
+            const text = document.getElementById(id).innerText;
+            await navigator.clipboard.writeText(text);
+            showCopiedState(btn);
+        }
+
+        function showCopiedState(btn) {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✓ คัดลอกแล้ว!";
+            btn.classList.add("btn-copied");
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove("btn-copied");
+            }, 2000);
+        }
+
+        // Initialize Prompt on page load
+        generateCustomPrompt();
+    </script>
+</body>
+</html>

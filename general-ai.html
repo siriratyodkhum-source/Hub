@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หมวดหมู่: งานทั่วไป & คอนเทนต์ - ChatGPT</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #F0FDF4; color: #111827; padding: 20px; font-size: 22px; }
+        
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #10A37F; text-decoration: none; font-weight: bold; font-size: 22px; }
+        .back-btn:hover { text-decoration: underline; color: #1A7F64; }
+
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { font-size: 2.2rem; color: #111827; margin-bottom: 8px; }
+
+        .category-container { display: flex; justify-content: center; margin-bottom: 25px; }
+        .category-badge { background-color: #10A37F; color: #ffffff; padding: 10px 24px; border-radius: 50px; font-size: 22px; font-weight: bold; }
+
+        .creator-badge { text-align: center; margin-bottom: 20px; }
+        .creator-info { font-size: 22px; color: #111827; line-height: 1.5; }
+
+        .container { max-width: 800px; margin: 0 auto; }
+        .ai-card { background: #ffffff; border-radius: 16px; padding: 1.8rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #BBF7D0; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .card-header h2 { font-size: 1.8rem; color: #111827; }
+        .badge { background-color: #DCFCE7; color: #1A7F64; padding: 0.4rem 0.8rem; border-radius: 15px; font-size: 22px; font-weight: bold; border: 1px solid #BBF7D0; }
+
+        /* Prompt Box สายค้นคว้า */
+        .prompt-box { background-color: #ffffff; border: 1px solid #BBF7D0; border-radius: 12px; padding: 1.2rem; margin: 1.2rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .prompt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; font-weight: bold; color: #111827; font-size: 22px; }
+        
+        .copy-btn { background-color: #10A37F; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 22px; font-weight: bold; transition: 0.2s; }
+        .copy-btn:hover { background-color: #1A7F64; }
+        
+        textarea { width: 100%; height: 180px; padding: 0.8rem; border-radius: 8px; border: 1px solid #BBF7D0; resize: none; background-color: #F0FDF4; font-size: 22px; line-height: 1.5; color: #111827; }
+        
+        /* สไตล์ Slash Card */
+        .slash-card { 
+            background: #ffffff; 
+            border: 1px solid #BBF7D0; 
+            border-radius: 12px; 
+            padding: 16px; 
+            margin-bottom: 16px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+
+        .slash-img-group { 
+            display: flex; 
+            gap: 12px; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+        }
+
+        .slash-img-group img { 
+            width: 130px; 
+            height: 130px; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            border: 1px solid #BBF7D0; 
+        }
+
+        .slash-arrow { color: #10A37F; font-size: 22px; font-weight: bold; } 
+        
+        .slash-info-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            gap: 12px; 
+            width: 100%; 
+            border-top: 1px solid #F0FDF4; 
+            padding-top: 12px; 
+        }
+
+        .slash-info { flex: 1; }
+        .slash-cmd-tag { display: inline-block; background-color: #111827; color: #ffffff; font-size: 22px; font-weight: bold; padding: 4px 12px; border-radius: 6px; margin-bottom: 6px; }
+        .slash-desc { font-size: 22px; color: #111827; line-height: 1.5; margin-top: 4px; }
+
+        /* สไตล์กล่อง YouTube และปุ่มเปิดใช้งาน */
+        .video-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #BBF7D0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 24px;
+            margin-bottom: 16px;
+        }
+
+        .video-text {
+            font-size: 22px;
+            color: #111827;
+            line-height: 1.5;
+        }
+
+        .video-text strong {
+            display: block;
+            color: #111827;
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .yt-btn {
+            background-color: #ff0000;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 22px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .yt-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .launch-btn {
+            background-color: #10A37F;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 22px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .launch-btn:hover {
+            background-color: #1A7F64;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← กลับหน้าหลัก</a>
+
+    <header>
+        <h1>AI แนะนำสำหรับงานทั่วไป & คอนเทนต์</h1>
+    </header>
+
+    <div class="category-container">
+        <div class="category-badge">หัวข้อ: งานทั่วไป & คอนเทนต์</div>
+    </div>
+
+    <!-- Creator Info Badge -->
+    <div class="creator-badge">
+        <div class="creator-info">
+            👨‍💻 <strong>ผู้สร้างและพัฒนา:</strong> OpenAI บริษัทวิจัยและพัฒนาปัญญาประดิษฐ์จากสหรัฐอเมริกา <br> ทีมและบุคคลสำคัญ Sam Altman Mira Murati
+        </div>
+    </div>
+	
+    <div style="text-align: center;">
+        <p>🎯 <b>วัตถุประสงค์:</b> การเป็นระบบ AI ที่สามารถ เข้าใจและสร้างภาษามนุษย์ เพื่อช่วยผู้ใช้ในงานต่าง</p>
+    </div>
+
+    <div class="container">
+        <div class="ai-card">
+            <div class="card-header">
+                <h2>7. ChatGPT</h2>
+                <span class="badge">ผู้สร้าง: OpenAI</span>
+            </div>
+            <p style="color: #111827; font-size: 22px; line-height: 1.5; margin-bottom: 15px;"><strong>คำแนะนำการใช้งาน:</strong> เหมาะสำหรับการคิดไอเดีย งานเขียนคอนเทนต์ ตอบคำถามทั่วไป สรุปความ และสร้างหรือแปลงสไตล์ภาพตามสั่งด้วยฟีเจอร์ Image Generation</p>
+            
+            <!-- Prompt สายงานค้นคว้า (โครงสร้าง RISER) -->
+            <div class="prompt-box">
+                <div class="prompt-header">
+                    <span>Prompt สำหรับสายค้นคว้าข้อมูล (โครงสร้าง RISER):</span>
+                    <button class="copy-btn" onclick="copyText('prompt7')">คัดลอก Prompt</button>
+                </div>
+                <textarea id="prompt7" readonly>[Role] คุณคือผู้ช่วยนักวิจัยและนักการตลาดมืออาชีพที่มีความเชี่ยวชาญสูง
+[Instruction] ช่วยค้นหาข้อมูล วิเคราะห์ และสรุปเทรนด์เทคโนโลยี AI ล่าสุดในปี 2025-2026 ให้เข้าใจง่าย
+[Step] 1. ค้นหาข้อมูลเชิงลึก 2. คัดเลือกเทรนด์ที่โดดเด่นและมีผลกระทบสูง 3. เรียบเรียงเนื้อหาเป็นระบบ
+[Expect] ขอสรุปเป็น Bullet Points 5 ข้อที่กระชับ อ่านแล้วเข้าใจทันที พร้อมยกตัวอย่างแบรนด์จริงที่นำไปใช้งาน และระบุแหล่งอ้างอิงที่น่าเชื่อถือ</textarea>
+            </div>
+
+            <!-- หมวดหมู่: เทคนิคสั่งแปลงรูปภาพ (Slash Commands) -->
+            <h3 style="margin: 1.8rem 0 1rem 0; color: #111827; font-size: 22px; display: flex; align-items: center; gap: 8px;">
+                🧠 เทคนิคสั่งแปลงรูปภาพ (Slash Commands)
+            </h3>
+
+            <!-- 1. Exploded View -->
+            <div class="slash-card">
+                <div class="slash-img-group">
+                    <img src="3404_0.jpg" alt="นาฬิกาเดิม">
+                    <span class="slash-arrow">➔</span>
+                    <img src="3405_0.jpg" alt="Exploded View">
+                </div>
+                <div class="slash-info-row">
+                    <div class="slash-info">
+                        <span class="slash-cmd-tag">/explodedview</span>
+                        <div class="slash-desc"><strong>คำอธิบาย:</strong> แปลงภาพถ่ายสินค้าปกติ ให้กลายเป็นภาพแยกชิ้นส่วนเชิงเทคนิค (Exploded View) โชว์กลไกภายในให้ดูมีความเป็นมืออาชีพ</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('p_exploded')">ก๊อปปี้</button>
+                </div>
+                <textarea id="p_exploded" style="display:none;">/explodedview แปลงรูปนี้ให้ออกมาเป็นสไตล์ภาพแยกชิ้นส่วน (Exploded View) เห็นกลไกและชิ้นส่วนภายในลอยแยกกันอย่างชัดเจน ตัดพื้นหลังออกให้เป็นสีขาวคลีน</textarea>
+            </div>
+
+            <!-- 2. X-Ray -->
+            <div class="slash-card">
+                <div class="slash-img-group">
+                    <img src="3406_0.jpg" alt="สุนัขเดิม">
+                    <span class="slash-arrow">➔</span>
+                    <img src="3407_0.jpg" alt="X-Ray">
+                </div>
+                <div class="slash-info-row">
+                    <div class="slash-info">
+                        <span class="slash-cmd-tag">/xray</span>
+                        <div class="slash-desc"><strong>คำอธิบาย:</strong> จำลองภาพสไตล์เอกซเรย์ มองทะลุผ่านพื้นผิวภายนอก เข้าไปเห็นโครงสร้างกระดูกหรือกลไกภายใน เพิ่มความแปลกตา</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('p_xray')">ก๊อปปี้</button>
+                </div>
+                <textarea id="p_xray" style="display:none;">/xray แปลงรูปนี้ให้อยู่ในสไตล์ภาพ X-ray แสดงโครงสร้างกระดูกหรือกลไกภายใน ใช้โทนสีขาวดำเน้นความชัดเจน ตัดพื้นหลังออก</textarea>
+            </div>
+
+            <!-- 3. Handwritten -->
+            <div class="slash-card">
+                <div class="slash-img-group">
+                    <img src="3408_0.jpg" alt="รถยนต์เดิม">
+                    <span class="slash-arrow">➔</span>
+                    <img src="3409_0.jpg" alt="Handwritten">
+                </div>
+                <div class="slash-info-row">
+                    <div class="slash-info">
+                        <span class="slash-cmd-tag">/handwritten</span>
+                        <div class="slash-desc"><strong>คำอธิบาย:</strong> เปลี่ยนภาพถ่ายทั่วไปให้กลายเป็นงานสเก็ตช์ภาพวาดด้วยดินสอ เห็นรายละเอียดลายเส้นและการแรเงาอย่างสมจริง ให้ความรู้สึกเหมือนภาพวาดด้วยมือ</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('p_handwritten')">ก๊อปปี้</button>
+                </div>
+                <textarea id="p_handwritten" style="display:none;">/handwritten เปลี่ยนภาพนี้ให้เป็นงานสเก็ตช์ภาพวาดด้วยดินสอ (Pencil Sketch) เห็นลายเส้นและน้ำหนักการแรเงาชัดเจน บนพื้นหลังสีขาวเรียบ</textarea>
+            </div>
+
+            <!-- 4. Sticky Notes -->
+            <div class="slash-card">
+                <div class="slash-img-group">
+                    <img src="3410_0.jpg" alt="ขวดนมเดิม">
+                    <span class="slash-arrow">➔</span>
+                    <img src="3411_0.jpg" alt="Sticky Notes">
+                </div>
+                <div class="slash-info-row">
+                    <div class="slash-info">
+                        <span class="slash-cmd-tag">/stickynotes</span>
+                        <div class="slash-desc"><strong>คำอธิบาย:</strong> สร้างภาพอินโฟกราฟิกจำลองกระดาษโน้ตแปะรอบสินค้า พร้อมลูกศรชี้จุดเด่น เหมาะสำหรับทำรีวิว</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('p_stickynotes')">ก๊อปปี้</button>
+                </div>
+                <textarea id="p_stickynotes" style="display:none;">/stickynotes ทำภาพสรุปวิเคราะห์สินค้าจากรูปนี้ โดยมีกระดาษโน้ตสีๆ (Sticky Notes) พร้อมลูกศรชี้บอกรายละเอียดและจุดเด่นรอบตัวสินค้า</textarea>
+            </div>
+
+            <!-- 5. Blueprint -->
+            <div class="slash-card">
+                <div class="slash-img-group">
+                    <img src="3412_0.jpg" alt="บ้านเดิม">
+                    <span class="slash-arrow">➔</span>
+                    <img src="3413_0.jpg" alt="Blueprint">
+                </div>
+                <div class="slash-info-row">
+                    <div class="slash-info">
+                        <span class="slash-cmd-tag">/blueprint</span>
+                        <div class="slash-desc"><strong>คำอธิบาย:</strong> แปลงภาพถ่ายให้กลายเป็นพิมพ์เขียวทางสถาปัตยกรรมหรือวิศวกรรม ลายเส้นสีขาวบนพื้นหลังสีน้ำเงินเข้ม</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('p_blueprint')">ก๊อปปี้</button>
+                </div>
+                <textarea id="p_blueprint" style="display:none;">/blueprint แปลงรูปนี้ให้ออกมาเป็นสไตล์แบบพิมพ์เขียว (Blueprint) ลายเส้นสีขาวบนพื้นหลังสีน้ำเงินเข้ม สไตล์งานออกแบบทางวิศวกรรมและสถาปัตยกรรม</textarea>
+            </div>
+
+            <!-- ปุ่มเปิดใช้งานด้านล่างสุด -->
+            <div class="action-row">
+                <a href="https://chatgpt.com" target="_blank" class="launch-btn">
+                    เปิดใช้งาน ChatGPT ↗
+                </a>
+            </div>
+
+            <!-- กล่องแนะนำวิดีโอ YouTube ท้ายสุด -->
+            <div class="video-box">
+                <div class="video-text">
+                    <strong>🎬 วิดีโอแนะนำการใช้งาน ChatGPT:</strong>
+                    รับชมคลิปสอนใช้งานอย่างละเอียดบน YouTube
+                </div>
+                <a href="https://youtu.be/-8afAwe8isE?si=ZZs01tzQqUwVjNPQ" target="_blank" class="yt-btn">
+                    ▶ ดูคลิปบน YouTube
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyText(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.style.display = "block";
+            textarea.select();
+            document.execCommand("copy");
+            if(elementId.startsWith('p_')) {
+                textarea.style.display = "none";
+            }
+            alert("คัดลอก Prompt เรียบร้อยแล้ว!");
+        }
+    </script>
+</body>
+</html>
